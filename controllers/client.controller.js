@@ -56,7 +56,17 @@ export const getProfile = async (req, res) => {
       include: [{ model: ClientInfo }]
     });
     if (!user) return res.status(404).json({ message: 'Client not found' });
-    res.status(200).json(user);
+    
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const userData = user.toJSON();
+    
+    if (userData.profile_image) userData.profile_image = `${baseUrl}${userData.profile_image}`;
+    if (userData.ClientInfo) {
+      if (userData.ClientInfo.logo) userData.ClientInfo.logo = `${baseUrl}${userData.ClientInfo.logo}`;
+      if (userData.ClientInfo.banner) userData.ClientInfo.banner = `${baseUrl}${userData.ClientInfo.banner}`;
+    }
+
+    res.status(200).json(userData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
