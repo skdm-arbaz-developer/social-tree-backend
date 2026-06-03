@@ -2,7 +2,10 @@ import { Service } from '../models/index.js';
 
 export const getServices = async (req, res) => {
   try {
-    const services = await Service.findAll({ where: { user_id: req.userId } });
+    const services = await Service.findAll({ 
+      where: { user_id: req.userId },
+      order: [['id', 'ASC']]
+    });
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });

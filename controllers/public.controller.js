@@ -6,6 +6,9 @@ export const getPublicProfile = async (req, res) => {
 
     const clientInfo = await ClientInfo.findOne({
       where: { unique_id },
+      order: [
+        [User, Service, 'id', 'ASC']
+      ],
       include: [{
         model: User,
         attributes: ['name', 'profile_image'],
