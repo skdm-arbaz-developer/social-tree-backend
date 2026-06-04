@@ -27,6 +27,10 @@ const Service = sequelize.define('Service', {
   icon: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  sort_order: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   }
 }, {
   tableName: 'Services',

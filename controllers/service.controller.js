@@ -4,7 +4,7 @@ export const getServices = async (req, res) => {
   try {
     const services = await Service.findAll({ 
       where: { user_id: req.userId },
-      order: [['id', 'ASC']]
+      order: [['sort_order', 'ASC'], ['id', 'ASC']]
     });
     res.status(200).json(services);
   } catch (error) {
@@ -15,11 +15,15 @@ export const getServices = async (req, res) => {
 export const addService = async (req, res) => {
   try {
     const { service_name, short_desc, icon } = req.body;
+    const maxSort = await Service.max('sort_order', { where: { user_id: req.userId } });
+    const sort_order = maxSort !== null ? maxSort + 1 : 0;
+
     const newService = await Service.create({
       user_id: req.userId,
       service_name,
       short_desc,
-      icon
+      icon,
+      sort_order
     });
     res.status(201).json({ message: 'Service added successfully', data: newService });
   } catch (error) {
@@ -51,6 +55,27 @@ export const deleteService = async (req, res) => {
     
     await service.destroy();
     res.status(200).json({ message: 'Service deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const reorderServices = async (req, res) => {
+  try {
+    const { services } = req.body;
+    
+    if (!Array.isArray(services)) {
+      return res.status(400).json({ message: 'Services must be an array' });
+    }
+
+    for (const item of services) {
+      await Service.update(
+        { sort_order: item.sort_order },
+        { where: { id: item.id, user_id: req.userId } }
+      );
+    }
+
+    res.status(200).json({ message: 'Services reordered successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
