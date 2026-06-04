@@ -18,7 +18,7 @@ export const getPublicProfile = async (req, res) => {
         include: [
           {
             model: SocialMedia,
-            attributes: ['id', 'platform', 'url', 'icon_url']
+            attributes: ['id', 'platform', 'url', 'icon_url', 'label']
           },
           {
             model: Service,

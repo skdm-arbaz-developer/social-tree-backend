@@ -14,7 +14,7 @@ export const getSocialLinks = async (req, res) => {
 
 export const createSocialLink = async (req, res) => {
   try {
-    const { platform, url } = req.body;
+    const { platform, url, label } = req.body;
     
     let icon_url = null;
     if (req.file) {
@@ -29,6 +29,7 @@ export const createSocialLink = async (req, res) => {
       platform,
       url,
       icon_url,
+      label,
       sort_order
     });
 
@@ -41,13 +42,14 @@ export const createSocialLink = async (req, res) => {
 export const updateSocialLink = async (req, res) => {
   try {
     const { id } = req.params;
-    const { platform, url } = req.body;
+    const { platform, url, label } = req.body;
 
     const link = await SocialMedia.findOne({ where: { id, user_id: req.userId } });
     if (!link) return res.status(404).json({ message: 'Link not found' });
 
     if (platform) link.platform = platform;
     if (url) link.url = url;
+    if (label !== undefined) link.label = label;
     
     if (req.file) {
       link.icon_url = `/uploads/${req.file.filename}`;

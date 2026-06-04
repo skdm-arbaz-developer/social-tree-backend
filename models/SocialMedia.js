@@ -7,6 +7,7 @@ const SocialMedia = sequelize.define('SocialMedia', {
   platform: { type: DataTypes.STRING, allowNull: false },
   url: { type: DataTypes.TEXT, allowNull: false },
   icon_url: { type: DataTypes.STRING, allowNull: true },
+  label: { type: DataTypes.STRING, allowNull: true },
   sort_order: { type: DataTypes.INTEGER, defaultValue: 0 }
 }, {
   timestamps: true,
